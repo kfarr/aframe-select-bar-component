@@ -1,13 +1,65 @@
+<!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8">
     <title>A-Frame A-Frame Select Bar Menu Component - Basic</title>
     <meta name="description" content="Basic example for A-Frame Select Bar Menu component."></meta>
+
+    <!-- using aframe master until next stable -->
+    <script src="https://rawgit.com/aframevr/aframe/master/dist/aframe-master.js"></script>
+
+    <script src="https://rawgit.com/ngokevin/aframe-animation-component/master/dist/aframe-animation-component.js"></script>
     <script src="../build.js"></script>
+
   </head>
   <body>
-    <a-scene>
-      <a-assets></a-assets>
-      <a-entity select-bar=""></a-entity>
+    <a-scene id="my-scene" antialias="true" >
+
+      <!-- Player -->
+      <a-entity id="cameraWrapper" >
+        <a-entity id="camera" camera look-controls wasd-controls="fly: true" ></a-entity>
+      </a-entity>
+
+      <!-- Left Hand -->
+      <a-entity id="leftController" wasd-controls oculus-touch-controls="hand: left" vive-controls="hand: left" >
+        <a-entity select-bar="controllerID: leftController" id="menuActions" scale="0.7 0.7 0.7" position="0 0.05 0.08" rotation="-85 0 0">
+          <optgroup label="Actions" value="actions">
+            <option value="teleport" src="assets/environment/icon_teleport.png" selected>Teleport</option>
+            <option value="save" src="assets/environment/icon_save.png">Save</option>
+            <option value="saveAs" src="assets/environment/icon_saveAs.png">Save As Copy</option>
+            <option value="new" src="assets/environment/icon_new.png">New</option>
+            <option value="erase" src="assets/environment/icon_erase.png">Erase</option>
+            <option value="inspect" src="assets/environment/icon_inspect.png">Inspect</option>
+            <option value="exit" src="assets/environment/icon_exit.png">Exit</option>
+          </optgroup>
+        </a-entity>
+      </a-entity>
+
+      <!-- Right Hand -->
+      <a-entity id="rightController" oculus-touch-controls="hand: right" vive-controls="hand: right">
+        <a-entity select-bar id="menuObjects" scale="0.7 0.7 0.7" position="0 0.05 0.08" rotation="-85 0 0">
+          <optgroup label="Bases" value="kfarr_bases">
+            <option value="base_street1" src="assets/preview/base_street1.jpg" selected>Street</option>
+            <option value="base_grass1" src="assets/preview/base_grass1.jpg">Grass</option>
+            <option value="base_crossstreet" src="assets/preview/base_crossstreet.jpg">Cross Street</option>
+            <option value="scene_house6" src="assets/preview/scene_house6.jpg">House Scene 6</option>
+            <option value="scene_house5" src="assets/preview/scene_house5.jpg">House Scene 5</option>
+            <option value="scene_house2" src="assets/preview/scene_house2.jpg">House Scene 2</option>
+            <option value="scene_park4" src="assets/preview/scene_park4.jpg">Park Scene 4</option>
+          </optgroup>
+        </a-entity>
+      </a-entity>
+
+      <!-- Floor -->
+      <a-entity id="floor" color="#603a2b" material="color:#603a2b" geometry="primitive: circle; radius: 2.5" position="0 0 0" rotation="-90 0 0" ></a-entity>
+
+      <!-- Environment -->
+      <a-entity id="sky"
+                geometry="primitive: sphere; radius: 65;"
+                material="shader: skyGradient; colorTop: #353449; colorBottom: #BC483E; side: back"></a-entity>
+      <a-entity ground></a-entity>
+      <a-entity light="color: white; intensity: 0.5" position="-5 5 15"></a-entity>
+      <a-entity light="color: white;  intensity: 0.5; type: ambient;"></a-entity>
     </a-scene>
 
     <!-- GitHub Corner. -->
@@ -18,5 +70,6 @@
     </a>
     <style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}
     <!-- End GitHub Corner. -->
+
   </body>
 </html>
