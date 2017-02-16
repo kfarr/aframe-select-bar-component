@@ -2,6 +2,10 @@
 
 This component creates a menu that can be defined using html option elements and attached to a VR controller.
 
+Work in progress, use at your own risk. 
+
+[![Video](https://img.youtube.com/vi/JlfMPgNpm3o/0.jpg)](https://www.youtube.com/watch?v=JlfMPgNpm3o)
+
 For [A-Frame](https://aframe.io).
 
 ### API
