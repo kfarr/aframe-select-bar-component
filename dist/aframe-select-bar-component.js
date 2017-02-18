@@ -44,6 +44,8 @@
 /* 0 */
 /***/ function(module, exports) {
 
+	'use strict';
+
 	// NOTES:
 	// at least one optgroup required, at least 7 options required per optgroup
 	// 4 and below should be no scroll
@@ -55,34 +57,36 @@
 
 	// HELPER FUNCTIONS
 	// find an element's original index position in an array by searching on an element's value in the array
-	function findWithAttr(array, attr, value) {  // find a
-	    for (var i = 0; i < array.length; i += 1) {
-	        if(array[i][attr] === value) {
-	            return i;
-	        }
+	function findWithAttr(array, attr, value) {
+	  // find a
+	  for (var i = 0; i < array.length; i += 1) {
+	    if (array[i][attr] === value) {
+	      return i;
 	    }
-	    return -1;
+	  }
+	  return -1;
 	}
 
 	// for a given array, find the largest value and return the value of the index thereof (0-based index)
 	function indexOfMax(arr) {
-	    if (arr.length === 0) {
-	        return -1;
+	  if (arr.length === 0) {
+	    return -1;
+	  }
+	  var max = arr[0];
+	  var maxIndex = 0;
+	  for (var i = 1; i < arr.length; i++) {
+	    if (arr[i] > max) {
+	      maxIndex = i;
+	      max = arr[i];
 	    }
-	    var max = arr[0];
-	    var maxIndex = 0;
-	    for (var i = 1; i < arr.length; i++) {
-	        if (arr[i] > max) {
-	            maxIndex = i;
-	            max = arr[i];
-	        }
-	    }
-	    return maxIndex;
+	  }
+	  return maxIndex;
 	}
 
 	// provide a valid Index for an Array if the desiredIndex is greater or less than an array's length by "looping" around
-	function loopIndex(desiredIndex, arrayLength) {   // expects a 0 based index
-	  if (desiredIndex > (arrayLength - 1)) {
+	function loopIndex(desiredIndex, arrayLength) {
+	  // expects a 0 based index
+	  if (desiredIndex > arrayLength - 1) {
 	    return desiredIndex - arrayLength;
 	  }
 	  if (desiredIndex < 0) {
@@ -92,16 +96,16 @@
 	}
 	// Ghetto testing of loopIndex helper function
 	function assert(condition, message) {
-	//    console.log(condition.stringify);
-	    if (!condition) {
-	        message = message || "Assertion failed";
-	        if (typeof Error !== "undefined") {
-	            throw new Error(message);
-	        }
-	        throw message; // Fallback
+	  //    console.log(condition.stringify);
+	  if (!condition) {
+	    message = message || "Assertion failed";
+	    if (typeof Error !== "undefined") {
+	      throw new Error(message);
 	    }
+	    throw message; // Fallback
+	  }
 	}
-	var testLoopArray = [0,1,2,3,4,5,6,7,8,9];
+	var testLoopArray = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 	assert(loopIndex(9, testLoopArray.length) == 9);
 	assert(loopIndex(10, testLoopArray.length) == 0);
 	assert(loopIndex(11, testLoopArray.length) == 1);
@@ -111,16 +115,16 @@
 
 	AFRAME.registerComponent('select-bar', {
 	  schema: {
-	    controls: {type: 'boolean', default: true},
-	    controllerID: {type: 'string', default: 'rightController'},
-	    selectedOptgroupValue: {type: 'string'},            // not intended to be set when defining component, used for tracking state
-	    selectedOptgroupIndex: {type: 'int', default: 0},   // not intended to be set when defining component, used for tracking state
-	    selectedOptionValue: {type: 'string'},              // not intended to be set when defining component, used for tracking state
-	    selectedOptionIndex: {type: 'int', default: 0}      // not intended to be set when defining component, used for tracking state
+	    controls: { type: 'boolean', default: true },
+	    controllerID: { type: 'string', default: 'rightController' },
+	    selectedOptgroupValue: { type: 'string' }, // not intended to be set when defining component, used for tracking state
+	    selectedOptgroupIndex: { type: 'int', default: 0 }, // not intended to be set when defining component, used for tracking state
+	    selectedOptionValue: { type: 'string' }, // not intended to be set when defining component, used for tracking state
+	    selectedOptionIndex: { type: 'int', default: 0 } // not intended to be set when defining component, used for tracking state
 	  },
 
 	  // for a given optgroup, make the children
-	  makeSelectOptionsRow: function(selectedOptgroupEl, parentEl, index, offsetY, idPrefix) {
+	  makeSelectOptionsRow: function makeSelectOptionsRow(selectedOptgroupEl, parentEl, index, offsetY, idPrefix) {
 
 	    // make the optgroup label
 	    var optgroupLabelEl = document.createElement("a-entity");
@@ -136,12 +140,12 @@
 	    parentEl.appendChild(optgroupLabelEl);
 
 	    // get the options available for this optgroup row
-	    var optionsElements = selectedOptgroupEl.getElementsByTagName("option");  // the actual JS children elements
+	    var optionsElements = selectedOptgroupEl.getElementsByTagName("option"); // the actual JS children elements
 
 	    // convert the NodeList of matching option elements into a Javascript Array
 	    var optionsElementsArray = Array.prototype.slice.call(optionsElements);
 
-	    var firstArray = optionsElementsArray.slice(0,4); // get items 0 - 4
+	    var firstArray = optionsElementsArray.slice(0, 4); // get items 0 - 4
 	    var previewArray = optionsElementsArray.slice(-3); // get the 3 LAST items of the array
 
 	    // Combine into "menuArray", a list of currently visible options where the middle index is the currently selected object
@@ -153,16 +157,11 @@
 
 	    // For each menu option, create a preview element and its appropriate children
 	    menuArray.forEach(function (element, menuArrayIndex) {
-	      var visible = (menuArrayIndex === 0 || menuArrayIndex === 6) ? (false) : (true);
-	      var selected = (menuArrayIndex === 3);
+	      var visible = menuArrayIndex === 0 || menuArrayIndex === 6 ? false : true;
+	      var selected = menuArrayIndex === 3;
 	      // index of the optionsElementsArray where optionsElementsArray.element.getattribute("value") = element.getattribute("value")
 	      var originalOptionsArrayIndex = findWithAttr(optionsElementsArray, "value", element.getAttribute("value"));
-	      selectOptionsHTML += `
-	      <a-entity id="${idPrefix}${originalOptionsArrayIndex}" visible="${visible}" class="preview${ (selected) ? " selected" : ""}" optionid="${originalOptionsArrayIndex}" value="${element.getAttribute("value")}" optgroup="${selectedOptgroupEl.getAttribute("value")}" position="${startPositionX} ${offsetY} 0">
-	        <a-box class="previewFrame" position="0 0 -0.003" scale="0.06 0.06 0.005" material="color: ${(selected) ? ("yellow") : ("#222222")}"></a-box>
-	        <a-image class="previewImage" scale="0.05 0.05 0.05" src="${element.getAttribute("src")}" ></a-image>
-	        <a-entity class="objectName" position="0.065 -0.04 -0.003" scale="0.18 0.18 0.18" text="value: ${element.text}; color: ${(selected) ? ("yellow") : ("#747474")}"></a-entity>
-	      </a-entity>`
+	      selectOptionsHTML += '\n      <a-entity id="' + idPrefix + originalOptionsArrayIndex + '" visible="' + visible + '" class="preview' + (selected ? " selected" : "") + '" optionid="' + originalOptionsArrayIndex + '" value="' + element.getAttribute("value") + '" optgroup="' + selectedOptgroupEl.getAttribute("value") + '" position="' + startPositionX + ' ' + offsetY + ' 0">\n        <a-box class="previewFrame" position="0 0 -0.003" scale="0.06 0.06 0.005" material="color: ' + (selected ? "yellow" : "#222222") + '"></a-box>\n        <a-image class="previewImage" scale="0.05 0.05 0.05" src="' + element.getAttribute("src") + '" ></a-image>\n        <a-entity class="objectName" position="0.065 -0.04 -0.003" scale="0.18 0.18 0.18" text="value: ' + element.text + '; color: ' + (selected ? "yellow" : "#747474") + '"></a-entity>\n      </a-entity>';
 	      startPositionX += deltaX;
 	    });
 
@@ -171,12 +170,11 @@
 	    selectOptionsRowEl.id = idPrefix + "selectOptionsRow" + index;
 	    selectOptionsRowEl.innerHTML = selectOptionsHTML;
 	    parentEl.appendChild(selectOptionsRowEl);
-
 	  },
 
-	  init: function () {
+	  init: function init() {
 	    // Create select bar menu from html child `option` elements beneath parent entity inspired by the html5 spec: http://www.w3schools.com/tags/tag_optgroup.asp
-	    var selectEl = this.el;  // Reference to the component's element.
+	    var selectEl = this.el; // Reference to the component's element.
 	    this.data.lastTime = new Date();
 
 	    // we want a consistent prefix when creating IDs
@@ -186,17 +184,11 @@
 	    // Create the "frame" of the select menu bar
 	    var selectRenderEl = document.createElement("a-entity");
 	    selectRenderEl.id = this.idPrefix + "selectRender";
-	    selectRenderEl.innerHTML = `
-	      <a-box id="${this.idPrefix}Frame" scale="0.4 0.15 0.005" position="0 0 -0.0075"  material="opacity: 0.5; transparent: true; color: #000000"></a-box>
-	      <a-entity id="${this.idPrefix}arrowRight" position="0.225 0 0" rotation="90 180 0" scale="-0.004 0.002 0.004" obj-model="obj:#env_arrow" material="opacity: 0.5; transparent: true; color: #000000"></a-entity>
-	      <a-entity id="${this.idPrefix}arrowLeft" position="-0.225 0 0" rotation="90 180 0" scale="0.004 0.002 0.004" obj-model="obj:#env_arrow" material="opacity:0.5; transparent:true; color:#000000"></a-entity>
-	      <a-entity id="${this.idPrefix}arrowUp" position="0 0.1 0" rotation="0 270 90" scale="0.004 0.002 0.004" obj-model="obj:#env_arrow" material="opacity: 0.5; transparent: true; color: #000000"></a-entity>
-	      <a-entity id="${this.idPrefix}arrowDown" position="0 -0.1 0" rotation="0 270 90" scale="-0.004 0.002 0.004" obj-model="obj:#env_arrow" material="opacity: 0.5; transparent: true; color: #000000"></a-entity>
-	      `;
+	    selectRenderEl.innerHTML = '\n      <a-box id="' + this.idPrefix + 'Frame" scale="0.4 0.15 0.005" position="0 0 -0.0075"  material="opacity: 0.5; transparent: true; color: #000000"></a-box>\n      <a-entity id="' + this.idPrefix + 'arrowRight" position="0.225 0 0" rotation="90 180 0" scale="-0.004 0.002 0.004" obj-model="obj:#env_arrow" material="opacity: 0.5; transparent: true; color: #000000"></a-entity>\n      <a-entity id="' + this.idPrefix + 'arrowLeft" position="-0.225 0 0" rotation="90 180 0" scale="0.004 0.002 0.004" obj-model="obj:#env_arrow" material="opacity:0.5; transparent:true; color:#000000"></a-entity>\n      <a-entity id="' + this.idPrefix + 'arrowUp" position="0 0.1 0" rotation="0 270 90" scale="0.004 0.002 0.004" obj-model="obj:#env_arrow" material="opacity: 0.5; transparent: true; color: #000000"></a-entity>\n      <a-entity id="' + this.idPrefix + 'arrowDown" position="0 -0.1 0" rotation="0 270 90" scale="-0.004 0.002 0.004" obj-model="obj:#env_arrow" material="opacity: 0.5; transparent: true; color: #000000"></a-entity>\n      ';
 	    selectEl.appendChild(selectRenderEl);
 
-	    var optgroups = selectEl.getElementsByTagName("optgroup");  // Get the optgroups
-	    var selectedOptgroupEl = optgroups[this.data.selectedOptgroupIndex];  // fetch the currently selected optgroup
+	    var optgroups = selectEl.getElementsByTagName("optgroup"); // Get the optgroups
+	    var selectedOptgroupEl = optgroups[this.data.selectedOptgroupIndex]; // fetch the currently selected optgroup
 	    this.data.selectedOptgroupValue = selectedOptgroupEl.getAttribute("value"); // set component property to opgroup value
 
 	    // this.idPrefix
@@ -205,29 +197,26 @@
 	    console.log("this.id: " + this.id);
 
 	    this.makeSelectOptionsRow(selectedOptgroupEl, selectRenderEl, this.data.selectedOptgroupIndex, 0, this.idPrefix);
-
 	  },
 
-
-	  removeSelectOptionsRow: function (index) {
+	  removeSelectOptionsRow: function removeSelectOptionsRow(index) {
 	    // find the appropriate select options row
 	    var selectOptionsRowEl = document.getElementById(this.idPrefix + "selectOptionsRow" + index);
 	    var optgroupLabelEl = document.getElementById(this.idPrefix + "optgroupLabel" + index);
 
-	//    console.log("try to remove children");
+	    //    console.log("try to remove children");
 	    // delete all children of selectOptionsRowEl
 	    while (selectOptionsRowEl.firstChild) {
-	        selectOptionsRowEl.removeChild(selectOptionsRowEl.firstChild);
+	      selectOptionsRowEl.removeChild(selectOptionsRowEl.firstChild);
 	    }
-	//    console.log("children removed");
+	    //    console.log("children removed");
 
 	    // delete selectOptionsRowEl and optgroupLabelEl
 	    optgroupLabelEl.parentNode.removeChild(optgroupLabelEl);
 	    selectOptionsRowEl.parentNode.removeChild(selectOptionsRowEl);
 	  },
 
-
-	  addEventListeners: function () {
+	  addEventListeners: function addEventListeners() {
 	    // If controls = true and a controllerID has been provided, then add controller event listeners
 	    if (this.data.controls && this.data.controllerID) {
 	      var controllerEl = document.getElementById(this.data.controllerID);
@@ -249,7 +238,7 @@
 	  /**
 	   * Remove event listeners.
 	   */
-	  removeEventListeners: function () {
+	  removeEventListeners: function removeEventListeners() {
 	    if (this.data.controls && this.data.controllerID) {
 	      var controllerEl = document.getElementById(this.data.controllerID);
 	      controllerEl.removeEventListener('trackpaddown', this.onTrackpadDown);
@@ -265,14 +254,13 @@
 	    el.removeEventListener('onOptionPrevious', this.onOptionPrevious);
 	    el.removeEventListener('onOptgroupNext', this.onOptgroupNext);
 	    el.removeEventListener('onOptgroupPrevious', this.onOptgroupPrevious);
-
 	  },
 
 	  /**
 	   * Called when entity resumes.
 	   * Use to continue or add any dynamic or background behavior such as events.
 	   */
-	  play: function () {
+	  play: function play() {
 	    this.addEventListeners();
 	  },
 
@@ -280,7 +268,7 @@
 	   * Called when entity pauses.
 	   * Use to stop or remove any dynamic or background behavior such as events.
 	   */
-	  pause: function () {
+	  pause: function pause() {
 	    this.removeEventListeners();
 	  },
 
@@ -288,19 +276,22 @@
 	   * Called when a component is removed (e.g., via removeAttribute).
 	   * Generally undoes all modifications to the entity.
 	   */
-	  remove: function () {
+	  remove: function remove() {
 	    this.removeEventListeners();
 	  },
 
-	  onTriggerDown: function (evt) {
-	    if (evt.target.id != this.data.controllerID) {   //menu: only deal with trigger down events from correct controller
+	  onTriggerDown: function onTriggerDown(evt) {
+	    if (evt.target.id != this.data.controllerID) {
+	      //menu: only deal with trigger down events from correct controller
 	      return;
 	    }
 	    this.el.emit("menuSelected");
 	  },
 
-	  onAxisMove: function (evt) {       // menu: used for determining current axis of trackpad hover position
-	    if (evt.target.id != this.data.controllerID) {   //menu: only deal with trackpad events from correct controller
+	  onAxisMove: function onAxisMove(evt) {
+	    // menu: used for determining current axis of trackpad hover position
+	    if (evt.target.id != this.data.controllerID) {
+	      //menu: only deal with trackpad events from correct controller
 	      return;
 	    }
 
@@ -316,21 +307,23 @@
 	        var gamepad = gamepads[i];
 	        if (gamepad) {
 	          if (gamepad.id.indexOf('Oculus Touch') === 0) {
-	//            console.log("isOculus");
+	            //            console.log("isOculus");
 	            isOculus = true;
 	          }
 	        }
 	      }
 	    }
 
-	//    console.log("axis[0]: " + evt.detail.axis[0] + " left -1; right +1");
-	//    console.log("axis[1]: " + evt.detail.axis[1] + " down -1; up +1");
-	//    console.log(evt.target.id);
+	    //    console.log("axis[0]: " + evt.detail.axis[0] + " left -1; right +1");
+	    //    console.log("axis[1]: " + evt.detail.axis[1] + " down -1; up +1");
+	    //    console.log(evt.target.id);
 
 	    // which axis has largest absolute value? then use that axis value to determine hover position
-	//    console.log(evt.detail.axis[0]);
-	    if (Math.abs(evt.detail.axis[0]) > Math.abs(evt.detail.axis[1])) { // if x axis absolute value (left/right) is greater than y axis (down/up)
-	      if (evt.detail.axis[0] > 0) { // if the right axis is greater than 0 (midpoint)
+	    //    console.log(evt.detail.axis[0]);
+	    if (Math.abs(evt.detail.axis[0]) > Math.abs(evt.detail.axis[1])) {
+	      // if x axis absolute value (left/right) is greater than y axis (down/up)
+	      if (evt.detail.axis[0] > 0) {
+	        // if the right axis is greater than 0 (midpoint)
 	        this.onHoverRight();
 	      } else {
 	        this.onHoverLeft();
@@ -343,7 +336,8 @@
 	        var yAxis = evt.detail.axis[1];
 	      }
 
-	      if (yAxis > 0) { // if the up axis is greater than 0 (midpoint)
+	      if (yAxis > 0) {
+	        // if the up axis is greater than 0 (midpoint)
 	        this.onHoverUp();
 	      } else {
 	        this.onHoverDown();
@@ -361,13 +355,12 @@
 
 	              // debounce (throttle) such that this only runs once every 1/2 second max
 	              var thisTime = new Date();
-	              if ( Math.floor(thisTime - this.data.lastTime) > 500 ) {
+	              if (Math.floor(thisTime - this.data.lastTime) > 500) {
 	                this.data.lastTime = thisTime;
 	                this.onTrackpadDown(evt);
 	              }
 
 	              return;
-
 	            }
 	          }
 	        }
@@ -375,11 +368,12 @@
 	    }
 	  },
 
-	  onHoverRight: function () {
+	  onHoverRight: function onHoverRight() {
 	    this.el.emit("menuHoverRight");
 	    var arrow = document.getElementById(this.idPrefix + "arrowRight");
 	    var currentArrowColor = new THREE.Color(arrow.getAttribute("material").color);
-	    if (currentArrowColor.r === 0) { // if not already some shade of yellow (which indicates recent button press) then animate green hover
+	    if (currentArrowColor.r === 0) {
+	      // if not already some shade of yellow (which indicates recent button press) then animate green hover
 	      arrow.removeAttribute('animation__color');
 	      arrow.removeAttribute('animation__opacity');
 	      arrow.setAttribute('animation__color', { property: 'material.color', dur: 500, from: "#00FF00", to: "#000000" });
@@ -387,11 +381,12 @@
 	    }
 	  },
 
-	  onHoverLeft: function () {
+	  onHoverLeft: function onHoverLeft() {
 	    this.el.emit("menuHoverLeft");
 	    var arrow = document.getElementById(this.idPrefix + "arrowLeft");
 	    var currentArrowColor = new THREE.Color(arrow.getAttribute("material").color);
-	    if (currentArrowColor.r === 0) { // if not already some shade of yellow (which indicates recent button press) then animate green hover
+	    if (currentArrowColor.r === 0) {
+	      // if not already some shade of yellow (which indicates recent button press) then animate green hover
 	      arrow.removeAttribute('animation__color');
 	      arrow.removeAttribute('animation__opacity');
 	      arrow.setAttribute('animation__color', { property: 'material.color', dur: 500, from: "#00FF00", to: "#000000" });
@@ -399,15 +394,16 @@
 	    }
 	  },
 
-	  onHoverDown: function () {
+	  onHoverDown: function onHoverDown() {
 	    this.el.emit("menuHoverDown");
 	    var selectEl = this.el;
-	    var optgroups = selectEl.getElementsByTagName("optgroup");  // Get the optgroups
+	    var optgroups = selectEl.getElementsByTagName("optgroup"); // Get the optgroups
 
 	    console.log(this.idPrefix + "arrowDown");
 	    var arrow = document.getElementById(this.idPrefix + "arrowDown");
 	    var currentArrowColor = new THREE.Color(arrow.getAttribute("material").color);
-	    if ( !(currentArrowColor.r > 0 && currentArrowColor.g > 0) ) { // if not already some shade of yellow (which indicates recent button press) then animate green hover
+	    if (!(currentArrowColor.r > 0 && currentArrowColor.g > 0)) {
+	      // if not already some shade of yellow (which indicates recent button press) then animate green hover
 	      if (this.data.selectedOptgroupIndex + 2 > optgroups.length) {
 	        // CAN'T DO - ALREADY AT END OF LIST
 	        var arrowColor = "#FF0000";
@@ -421,38 +417,39 @@
 	    }
 	  },
 
-	  onHoverUp: function () {
+	  onHoverUp: function onHoverUp() {
 	    this.el.emit("menuHoverUp");
 	    var selectEl = this.el;
-	    var optgroups = selectEl.getElementsByTagName("optgroup");  // Get the optgroups
+	    var optgroups = selectEl.getElementsByTagName("optgroup"); // Get the optgroups
 
 	    var arrow = document.getElementById(this.idPrefix + "arrowUp");
 	    var currentArrowColor = new THREE.Color(arrow.getAttribute("material").color);
-	    if ( !(currentArrowColor.r > 0 && currentArrowColor.g > 0) ) { // if not already some shade of yellow (which indicates recent button press) then animate green hover
+	    if (!(currentArrowColor.r > 0 && currentArrowColor.g > 0)) {
+	      // if not already some shade of yellow (which indicates recent button press) then animate green hover
 	      if (this.data.selectedOptgroupIndex - 1 < 0) {
-	         // CAN'T DO - ALREADY AT END OF LIST
-	         var arrowColor = "#FF0000";
-	       } else {
-	         var arrowColor = "#00FF00";
-	       }
-	       arrow.removeAttribute('animation__color');
-	       arrow.removeAttribute('animation__opacity');
-	       arrow.setAttribute('animation__color', { property: 'material.color', dur: 500, from: arrowColor, to: "#000000" });
-	       arrow.setAttribute('animation__opacity', { property: 'material.opacity', dur: 500, from: "1", to: "0.5" });
+	        // CAN'T DO - ALREADY AT END OF LIST
+	        var arrowColor = "#FF0000";
+	      } else {
+	        var arrowColor = "#00FF00";
+	      }
+	      arrow.removeAttribute('animation__color');
+	      arrow.removeAttribute('animation__opacity');
+	      arrow.setAttribute('animation__color', { property: 'material.color', dur: 500, from: arrowColor, to: "#000000" });
+	      arrow.setAttribute('animation__opacity', { property: 'material.opacity', dur: 500, from: "1", to: "0.5" });
 	    }
 	  },
 
-	  onOptionNext: function (evt) {
+	  onOptionNext: function onOptionNext(evt) {
 	    this.onOptionSwitch("next");
 	  },
 
-	  onOptionPrevious: function (evt) {
+	  onOptionPrevious: function onOptionPrevious(evt) {
 	    this.onOptionSwitch("previous");
 	  },
 
-	  onOptgroupNext: function(evt) {
+	  onOptgroupNext: function onOptgroupNext(evt) {
 	    var selectEl = this.el;
-	    var optgroups = selectEl.getElementsByTagName("optgroup");  // Get the optgroups
+	    var optgroups = selectEl.getElementsByTagName("optgroup"); // Get the optgroups
 	    var selectRenderEl = document.getElementById(this.idPrefix + "selectRender");
 
 	    if (this.data.selectedOptgroupIndex + 2 > optgroups.length) {
@@ -464,19 +461,18 @@
 	      arrow.setAttribute('animation__color', { property: 'material.color', dur: 500, from: "#FF0000", to: "#000000" });
 	      arrow.setAttribute('animation__opacity', { property: 'material.opacity', dur: 500, from: "1", to: "0.5" });
 	      arrow.setAttribute('animation__scale', { property: 'scale', dur: 500, from: "-0.006 0.003 0.006", to: "-0.004 0.002 0.004" });
-
 	    } else {
 	      // CAN DO THIS, show next optgroup
 
 	      this.removeSelectOptionsRow(this.data.selectedOptgroupIndex); // remove the old optgroup row
 
 	      this.data.selectedOptgroupIndex += 1;
-	      var selectedOptgroupEl = optgroups[this.data.selectedOptgroupIndex];  // fetch the currently selected optgroup
+	      var selectedOptgroupEl = optgroups[this.data.selectedOptgroupIndex]; // fetch the currently selected optgroup
 	      this.data.selectedOptgroupValue = selectedOptgroupEl.getAttribute("value"); // set component property to opgroup value
 
 	      this.el.flushToDOM();
 
-	      var nextSelectedOptgroupEl = optgroups[this.data.selectedOptgroupIndex];  // fetch the currently selected optgroup
+	      var nextSelectedOptgroupEl = optgroups[this.data.selectedOptgroupIndex]; // fetch the currently selected optgroup
 	      // this.makeSelectOptionsRow(nextSelectedOptgroupEl, selectRenderEl, this.data.selectedOptgroupIndex, -0.15);
 	      this.makeSelectOptionsRow(nextSelectedOptgroupEl, selectRenderEl, this.data.selectedOptgroupIndex, 0, this.idPrefix);
 
@@ -501,12 +497,11 @@
 	      arrow.setAttribute('animation__opacity', { property: 'material.opacity', dur: 500, from: "1", to: "0.5" });
 	      arrow.setAttribute('animation__scale', { property: 'scale', dur: 500, from: "-0.006 0.003 0.006", to: "-0.004 0.002 0.004" });
 	    }
-
 	  },
 
-	  onOptgroupPrevious: function(evt) {
+	  onOptgroupPrevious: function onOptgroupPrevious(evt) {
 	    var selectEl = this.el;
-	    var optgroups = selectEl.getElementsByTagName("optgroup");  // Get the optgroups
+	    var optgroups = selectEl.getElementsByTagName("optgroup"); // Get the optgroups
 	    var selectRenderEl = document.getElementById(this.idPrefix + "selectRender");
 
 	    if (this.data.selectedOptgroupIndex - 1 < 0) {
@@ -518,19 +513,18 @@
 	      arrow.setAttribute('animation__color', { property: 'material.color', dur: 500, from: "#FF0000", to: "#000000" });
 	      arrow.setAttribute('animation__opacity', { property: 'material.opacity', dur: 500, from: "1", to: "0.5" });
 	      arrow.setAttribute('animation__scale', { property: 'scale', dur: 500, from: "0.006 0.003 0.006", to: "0.004 0.002 0.004" });
-
 	    } else {
 	      // CAN DO THIS, show previous optgroup
 
 	      this.removeSelectOptionsRow(this.data.selectedOptgroupIndex); // remove the old optgroup row
 
 	      this.data.selectedOptgroupIndex -= 1;
-	      var selectedOptgroupEl = optgroups[this.data.selectedOptgroupIndex];  // fetch the currently selected optgroup
+	      var selectedOptgroupEl = optgroups[this.data.selectedOptgroupIndex]; // fetch the currently selected optgroup
 	      this.data.selectedOptgroupValue = selectedOptgroupEl.getAttribute("value"); // set component property to opgroup value
 
 	      this.el.flushToDOM();
 
-	      var nextSelectedOptgroupEl = optgroups[this.data.selectedOptgroupIndex];  // fetch the currently selected optgroup
+	      var nextSelectedOptgroupEl = optgroups[this.data.selectedOptgroupIndex]; // fetch the currently selected optgroup
 	      // this.makeSelectOptionsRow(nextSelectedOptgroupEl, selectRenderEl, this.data.selectedOptgroupIndex, -0.15);
 	      this.makeSelectOptionsRow(nextSelectedOptgroupEl, selectRenderEl, this.data.selectedOptgroupIndex, 0, this.idPrefix);
 
@@ -555,10 +549,9 @@
 	      arrow.setAttribute('animation__opacity', { property: 'material.opacity', dur: 500, from: "1", to: "0.5" });
 	      arrow.setAttribute('animation__scale', { property: 'scale', dur: 500, from: "0.006 0.003 0.006", to: "0.004 0.002 0.004" });
 	    }
-
 	  },
 
-	  onTrackpadDown: function (evt) {
+	  onTrackpadDown: function onTrackpadDown(evt) {
 	    //menu: only deal with trackpad events from controller specified in component property
 	    if (evt.target.id != this.data.controllerID) {
 	      return;
@@ -573,33 +566,39 @@
 	    var arrowRightColor = new THREE.Color(document.getElementById(this.idPrefix + "arrowRight").getAttribute("material").color);
 	    var arrowDownColor = new THREE.Color(document.getElementById(this.idPrefix + "arrowDown").getAttribute("material").color);
 	    var arrowLeftColor = new THREE.Color(document.getElementById(this.idPrefix + "arrowLeft").getAttribute("material").color);
-	//    var arrowColorArray = [arrowUpColor, arrowRightColor, arrowDownColor, arrowLeftColor];
+	    //    var arrowColorArray = [arrowUpColor, arrowRightColor, arrowDownColor, arrowLeftColor];
 	    var arrowColorArrayGreen = [arrowUpColor.g, arrowRightColor.g, arrowDownColor.g, arrowLeftColor.g];
 
-	    if ( arrowColorArrayGreen.reduce((a, b) => a + b, 0) > 0) { // if at least one value is > 0
-	      switch (indexOfMax(arrowColorArrayGreen)) {         // Determine which value in the array is the largest
-	        case 0:        // up
+	    if (arrowColorArrayGreen.reduce(function (a, b) {
+	      return a + b;
+	    }, 0) > 0) {
+	      // if at least one value is > 0
+	      switch (indexOfMax(arrowColorArrayGreen)) {// Determine which value in the array is the largest
+	        case 0:
+	          // up
 	          this.onOptgroupPrevious();
 	          console.log("PRESSup");
 	          return; // without this return the other cases are fired - weird!
-	        case 1:        // right
+	        case 1:
+	          // right
 	          this.onOptionSwitch("next");
 	          console.log("PRESSright");
 	          return;
-	        case 2:        // down
+	        case 2:
+	          // down
 	          this.onOptgroupNext();
 	          console.log("PRESSdown");
 	          return;
-	        case 3:        // left
+	        case 3:
+	          // left
 	          this.onOptionSwitch("previous");
 	          console.log("PRESSleft");
 	          return;
 	      }
 	    }
-
 	  },
 
-	  onOptionSwitch: function (direction) {
+	  onOptionSwitch: function onOptionSwitch(direction) {
 	    console.log(this);
 	    console.log(this.data);
 	    // Switch to the next option, or switch in the direction of the most recently hovered directional arrow
@@ -609,16 +608,16 @@
 	    console.log(this.idPrefix + 'selectOptionsRow' + this.data.selectedOptgroupIndex);
 	    var selectOptionsRowEl = document.getElementById(this.idPrefix + 'selectOptionsRow' + this.data.selectedOptgroupIndex);
 
-	    const oldMenuEl = selectOptionsRowEl.getElementsByClassName('selected')[0];
+	    var oldMenuEl = selectOptionsRowEl.getElementsByClassName('selected')[0];
 	    // console.log(oldMenuEl);
 
 	    var oldSelectedOptionIndex = parseInt(oldMenuEl.getAttribute("optionid"));
 	    var selectedOptionIndex = oldSelectedOptionIndex;
 	    // console.log(selectedOptionIndex);
 
-	    var selectEl = this.el;  // Reference to the component's entity.
-	    var optgroups = selectEl.getElementsByTagName("optgroup");  // Get the optgroups
-	    var selectedOptgroupEl = optgroups[this.data.selectedOptgroupIndex];  // fetch the currently selected optgroup
+	    var selectEl = this.el; // Reference to the component's entity.
+	    var optgroups = selectEl.getElementsByTagName("optgroup"); // Get the optgroups
+	    var selectedOptgroupEl = optgroups[this.data.selectedOptgroupIndex]; // fetch the currently selected optgroup
 
 	    if (direction == 'previous') {
 	      this.el.emit("menuPrevious");
@@ -636,7 +635,7 @@
 	      arrowLeft.setAttribute('animation__scale', { property: 'scale', dur: 500, from: "0.006 0.003 0.006", to: "0.004 0.002 0.004" });
 
 	      // menu: get the newly selected menu element
-	      const newMenuEl = selectOptionsRowEl.querySelectorAll("[optionid='" + selectedOptionIndex + "']")[0];
+	      var newMenuEl = selectOptionsRowEl.querySelectorAll("[optionid='" + selectedOptionIndex + "']")[0];
 
 	      // menu: remove selected class and change colors
 	      oldMenuEl.classList.remove("selected");
@@ -652,7 +651,7 @@
 	      newMenuEl.getElementsByClassName("previewFrame")[0].setAttribute('material', 'color', 'yellow');
 
 	      // menu: slide the menu list row RIGHT by 1
-	//      const selectOptionsRowEl = document.querySelector("#selectOptionsRow");
+	      //      const selectOptionsRowEl = document.querySelector("#selectOptionsRow");
 	      // use the desiredPosition attribute (if exists) instead of object3D position as animation may not be done yet
 	      if (selectOptionsRowEl.hasAttribute("desiredPosition")) {
 	        var oldPosition = selectOptionsRowEl.getAttribute("desiredPosition");
@@ -672,7 +671,7 @@
 	      var newlyVisibleOptionEl = selectOptionsRowEl.querySelectorAll("[optionid='" + newlyVisibleOptionIndex + "']")[0];
 
 	      // make visible and animate
-	      newlyVisibleOptionEl.setAttribute('visible','true');
+	      newlyVisibleOptionEl.setAttribute('visible', 'true');
 	      newlyVisibleOptionEl.removeAttribute('animation');
 	      newlyVisibleOptionEl.setAttribute('animation', { property: 'scale', dur: 500, from: '0.5 0.5 0.5', to: '1.0 1.0 1.0' });
 	      newlyVisibleOptionEl.flushToDOM();
@@ -702,21 +701,20 @@
 	      newlyCreatedOptionEl.setAttribute('value', sourceOptionEl.getAttribute("value"));
 
 	      var newlyVisibleOptionPosition = newlyVisibleOptionEl.object3D.position;
-	      newlyCreatedOptionEl.setAttribute('position', (newlyVisibleOptionPosition.x - 0.075) + " " + newlyVisibleOptionPosition.y + " " + newlyVisibleOptionPosition.z);
+	      newlyCreatedOptionEl.setAttribute('position', newlyVisibleOptionPosition.x - 0.075 + " " + newlyVisibleOptionPosition.y + " " + newlyVisibleOptionPosition.z);
 	      newlyCreatedOptionEl.flushToDOM();
 
 	      // menu: add the newly cloned and modified menu object preview to the dom
-	      selectOptionsRowEl.insertBefore( newlyCreatedOptionEl, selectOptionsRowEl.firstChild );
+	      selectOptionsRowEl.insertBefore(newlyCreatedOptionEl, selectOptionsRowEl.firstChild);
 
 	      // menu: get child elements for image and name, populate both appropriately
 	      var appendedNewlyCreatedOptionEl = selectOptionsRowEl.querySelectorAll("[optionid='" + newlyCreatedOptionIndex + "']")[0];
-	      appendedNewlyCreatedOptionEl.getElementsByClassName("previewImage")[0].setAttribute('src', sourceOptionEl.getAttribute("src"))
+	      appendedNewlyCreatedOptionEl.getElementsByClassName("previewImage")[0].setAttribute('src', sourceOptionEl.getAttribute("src"));
 	      appendedNewlyCreatedOptionEl.getElementsByClassName("objectName")[0].setAttribute('text', 'value', sourceOptionEl.text);
 	      appendedNewlyCreatedOptionEl.getElementsByClassName("objectName")[0].setAttribute('text', 'color', '#747474');
 	      appendedNewlyCreatedOptionEl.flushToDOM();
 
-	    // PREVIOUS OPTION MENU END ===============================
-
+	      // PREVIOUS OPTION MENU END ===============================
 	    } else {
 	      this.el.emit("menuNext");
 	      // NEXT OPTION MENU START ===============================
@@ -732,41 +730,41 @@
 	      arrowRight.setAttribute('animation__scale', { property: 'scale', dur: 500, from: "-0.006 0.003 0.006", to: "-0.004 0.002 0.004" });
 
 	      // menu: get the newly selected menu element
-	      const newMenuEl = selectOptionsRowEl.querySelectorAll("[optionid='" + selectedOptionIndex + "']")[0];
+	      var _newMenuEl = selectOptionsRowEl.querySelectorAll("[optionid='" + selectedOptionIndex + "']")[0];
 
 	      // menu: remove selected class and change colors
 	      oldMenuEl.classList.remove("selected");
-	      newMenuEl.classList.add("selected");
-	      this.data.selectedOptionValue = newMenuEl.getAttribute("value");
+	      _newMenuEl.classList.add("selected");
+	      this.data.selectedOptionValue = _newMenuEl.getAttribute("value");
 	      console.log(this.data.selectedOptionValue);
 	      this.data.selectedOptionIndex = selectedOptionIndex;
 	      this.el.flushToDOM();
 	      this.el.emit("menuChanged");
 	      oldMenuEl.getElementsByClassName("objectName")[0].setAttribute('text', 'color', 'gray');
-	      newMenuEl.getElementsByClassName("objectName")[0].setAttribute('text', 'color', 'yellow');
+	      _newMenuEl.getElementsByClassName("objectName")[0].setAttribute('text', 'color', 'yellow');
 	      oldMenuEl.getElementsByClassName("previewFrame")[0].setAttribute('material', 'color', '#222222');
-	      newMenuEl.getElementsByClassName("previewFrame")[0].setAttribute('material', 'color', 'yellow');
+	      _newMenuEl.getElementsByClassName("previewFrame")[0].setAttribute('material', 'color', 'yellow');
 
 	      // menu: slide the menu list left by 1
-	//      const selectOptionsRowEl = document.querySelector("#selectOptionsRow");
+	      //      const selectOptionsRowEl = document.querySelector("#selectOptionsRow");
 	      // use the desiredPosition attribute (if exists) instead of object3D position as animation may not be done yet
 	      // TODO - error with this code when looping through index
 
-	//      console.log("'true' old position");
-	//      console.log(selectOptionsRowEl.object3D.position);
+	      //      console.log("'true' old position");
+	      //      console.log(selectOptionsRowEl.object3D.position);
 
 	      if (selectOptionsRowEl.hasAttribute("desiredPosition")) {
-	//        console.log('desiredPosition');
+	        //        console.log('desiredPosition');
 	        var oldPosition = selectOptionsRowEl.getAttribute("desiredPosition");
-	//        console.log(oldPosition);
+	        //        console.log(oldPosition);
 	        var newX = parseFloat(oldPosition.split(" ")[0]) - 0.075;
 	        var newPositionString = newX.toString() + " " + oldPosition.split(" ")[1] + " " + oldPosition.split(" ")[2];
-	//        console.log(newPositionString);
+	        //        console.log(newPositionString);
 	      } else {
 	        var oldPosition = selectOptionsRowEl.object3D.position;
 	        var newX = oldPosition.x - 0.075; // this could be a variable soon
 	        var newPositionString = newX.toString() + " " + oldPosition.y + " " + oldPosition.z;
-	//        console.log(newPositionString);
+	        //        console.log(newPositionString);
 	      }
 	      selectOptionsRowEl.removeAttribute('animation__slide');
 	      selectOptionsRowEl.setAttribute('animation__slide', { property: 'position', dur: 500, from: oldPosition, to: newPositionString });
@@ -777,7 +775,7 @@
 	      var newlyVisibleOptionEl = selectOptionsRowEl.querySelectorAll("[optionid='" + newlyVisibleOptionIndex + "']")[0];
 
 	      // make visible and animate
-	      newlyVisibleOptionEl.setAttribute('visible','true');
+	      newlyVisibleOptionEl.setAttribute('visible', 'true');
 	      newlyVisibleOptionEl.removeAttribute('animation');
 	      newlyVisibleOptionEl.setAttribute('animation', { property: 'scale', dur: 500, from: '0.5 0.5 0.5', to: '1.0 1.0 1.0' });
 	      newlyVisibleOptionEl.flushToDOM();
@@ -798,38 +796,36 @@
 	      var newlyCreatedOptionEl = newlyVisibleOptionEl.cloneNode(true);
 	      newlyCreatedOptionEl.setAttribute('visible', 'false');
 	      var newlyCreatedOptionIndex = loopIndex(oldSelectedOptionIndex + 4, selectedOptgroupEl.childElementCount);
-	//      console.log("newlyCreatedOptionIndex: " + newlyCreatedOptionIndex);
+	      //      console.log("newlyCreatedOptionIndex: " + newlyCreatedOptionIndex);
 	      // get the actual "option" element that is the source of truth for value, image src and label so that we can populate the new menu option
 	      var sourceOptionEl = selectedOptgroupEl.children[newlyCreatedOptionIndex];
-	//      console.log("sourceOptionEl");
-	//      console.log(sourceOptionEl);
+	      //      console.log("sourceOptionEl");
+	      //      console.log(sourceOptionEl);
 
 	      newlyCreatedOptionEl.setAttribute('optionid', newlyCreatedOptionIndex);
 	      newlyCreatedOptionEl.setAttribute('id', this.idPrefix + newlyCreatedOptionIndex);
 	      newlyCreatedOptionEl.setAttribute('value', sourceOptionEl.getAttribute("value"));
 
 	      var newlyVisibleOptionPosition = newlyVisibleOptionEl.object3D.position;
-	      newlyCreatedOptionEl.setAttribute('position', (newlyVisibleOptionPosition.x + 0.075) + " " + newlyVisibleOptionPosition.y + " " + newlyVisibleOptionPosition.z);
+	      newlyCreatedOptionEl.setAttribute('position', newlyVisibleOptionPosition.x + 0.075 + " " + newlyVisibleOptionPosition.y + " " + newlyVisibleOptionPosition.z);
 	      newlyCreatedOptionEl.flushToDOM();
 
 	      // menu: add the newly cloned and modified menu object preview
-	      selectOptionsRowEl.insertBefore( newlyCreatedOptionEl, selectOptionsRowEl.firstChild );
+	      selectOptionsRowEl.insertBefore(newlyCreatedOptionEl, selectOptionsRowEl.firstChild);
 
 	      // menu: get child elements for image and name, populate both appropriately
 	      var appendedNewlyCreatedOptionEl = selectOptionsRowEl.querySelectorAll("[optionid='" + newlyCreatedOptionIndex + "']")[0];
 
-	      appendedNewlyCreatedOptionEl.getElementsByClassName("previewImage")[0].setAttribute('src', sourceOptionEl.getAttribute("src"))
+	      appendedNewlyCreatedOptionEl.getElementsByClassName("previewImage")[0].setAttribute('src', sourceOptionEl.getAttribute("src"));
 	      appendedNewlyCreatedOptionEl.getElementsByClassName("objectName")[0].setAttribute('text', 'value', sourceOptionEl.text);
 	      appendedNewlyCreatedOptionEl.getElementsByClassName("objectName")[0].setAttribute('text', 'color', '#747474');
 	      appendedNewlyCreatedOptionEl.flushToDOM();
 
 	      // NEXT MENU OPTION END ===============================
 	    }
-
 	  }
 
 	});
-
 
 /***/ }
 /******/ ]);
