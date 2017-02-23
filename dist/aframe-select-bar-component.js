@@ -189,6 +189,10 @@
 	    this.data.selectedOptgroupValue = selectedOptgroupEl.getAttribute("value"); // set component property to opgroup value
 
 	    this.makeSelectOptionsRow(selectedOptgroupEl, selectRenderEl, this.data.selectedOptgroupIndex, 0, this.idPrefix);
+
+	    var options = selectedOptgroupEl.getElementsByTagName("option");
+	    var selectedOptionEl = options[this.data.selectedOptionIndex];
+	    this.data.selectedOptionValue = selectedOptionEl.getAttribute("value");
 	  },
 
 	  removeSelectOptionsRow: function removeSelectOptionsRow(index) {
