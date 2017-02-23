@@ -152,6 +152,10 @@ AFRAME.registerComponent('select-bar', {
 
     this.makeSelectOptionsRow(selectedOptgroupEl, selectRenderEl, this.data.selectedOptgroupIndex, 0, this.idPrefix);
 
+    var options = selectedOptgroupEl.getElementsByTagName("option");
+    var selectedOptionEl = options[this.data.selectedOptionIndex];
+    this.data.selectedOptionValue = selectedOptionEl.getAttribute("value");
+
   },
 
 
