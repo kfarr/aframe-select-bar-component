@@ -128,9 +128,6 @@
 
 	    // make the optgroup label
 	    var optgroupLabelEl = document.createElement("a-entity");
-	    console.log(idPrefix);
-	    console.log("this.attrName" + this.attrName);
-	    console.log("this.id" + this.id);
 
 	    optgroupLabelEl.id = idPrefix + "optgroupLabel" + index;
 	    optgroupLabelEl.setAttribute("position", "0.07 " + (0.045 + offsetY) + " -0.003");
@@ -190,11 +187,6 @@
 	    var optgroups = selectEl.getElementsByTagName("optgroup"); // Get the optgroups
 	    var selectedOptgroupEl = optgroups[this.data.selectedOptgroupIndex]; // fetch the currently selected optgroup
 	    this.data.selectedOptgroupValue = selectedOptgroupEl.getAttribute("value"); // set component property to opgroup value
-
-	    // this.idPrefix
-	    console.log(this.idPrefix);
-	    console.log("this.attrName: " + this.attrName);
-	    console.log("this.id: " + this.id);
 
 	    this.makeSelectOptionsRow(selectedOptgroupEl, selectRenderEl, this.data.selectedOptgroupIndex, 0, this.idPrefix);
 	  },
