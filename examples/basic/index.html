@@ -15,6 +15,10 @@
   <body>
     <a-scene id="my-scene" antialias="true" >
 
+      <a-assets>
+        <a-asset-item id="env_arrow" src="../assets/env_arrow.obj"></a-asset-item>
+      </a-assets>
+
       <!-- Player -->
       <a-entity id="cameraWrapper" >
         <a-entity id="camera" camera look-controls wasd-controls="fly: true" ></a-entity>
@@ -24,19 +28,19 @@
       <a-entity id="leftController" wasd-controls oculus-touch-controls="hand: left" vive-controls="hand: left" >
         <a-entity select-bar="controllerID: leftController" id="menuActions" scale="0.7 0.7 0.7" position="0 0.05 0.08" rotation="-85 0 0">
           <optgroup label="Actions" value="actions">
-            <option value="teleport" src="assets/environment/icon_teleport.png" selected>Teleport</option>
-            <option value="save" src="assets/environment/icon_save.png">Save</option>
-            <option value="saveAs" src="assets/environment/icon_saveAs.png">Save As Copy</option>
-            <option value="new" src="assets/environment/icon_new.png">New</option>
-            <option value="erase" src="assets/environment/icon_erase.png">Erase</option>
-            <option value="inspect" src="assets/environment/icon_inspect.png">Inspect</option>
-            <option value="exit" src="assets/environment/icon_exit.png">Exit</option>
+            <option value="teleport" src="icon_teleport.png" selected>Teleport</option>
+            <option value="save" src="icon_save.png">Save</option>
+            <option value="saveAs" src="icon_saveAs.png">Save As Copy</option>
+            <option value="new" src="icon_new.png">New</option>
+            <option value="erase" src="icon_erase.png">Erase</option>
+            <option value="inspect" src="icon_inspect.png">Inspect</option>
+            <option value="exit" src="icon_exit.png">Exit</option>
           </optgroup>
         </a-entity>
       </a-entity>
 
       <!-- Right Hand -->
-      <a-entity id="rightController" oculus-touch-controls="hand: right" vive-controls="hand: right">
+      <!-- <a-entity id="rightController" oculus-touch-controls="hand: right" vive-controls="hand: right">
         <a-entity select-bar id="menuObjects" scale="0.7 0.7 0.7" position="0 0.05 0.08" rotation="-85 0 0">
           <optgroup label="Bases" value="kfarr_bases">
             <option value="base_street1" src="assets/preview/base_street1.jpg" selected>Street</option>
@@ -48,7 +52,7 @@
             <option value="scene_park4" src="assets/preview/scene_park4.jpg">Park Scene 4</option>
           </optgroup>
         </a-entity>
-      </a-entity>
+      </a-entity> -->
 
       <!-- Floor -->
       <a-entity id="floor" color="#603a2b" material="color:#603a2b" geometry="primitive: circle; radius: 2.5" position="0 0 0" rotation="-90 0 0" ></a-entity>
