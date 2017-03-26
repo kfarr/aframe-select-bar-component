@@ -8,8 +8,6 @@ Work in progress, use at your own risk.
 
 For [A-Frame](https://aframe.io).
 
-To Do items:
-* remove use of "data" for dynamic properties not specified in DOM. revise functions in city builder that make use of the .data prefix
 
 ### API
 

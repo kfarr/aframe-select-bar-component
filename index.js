@@ -66,11 +66,7 @@ assert(loopIndex(-2, testLoopArray.length) == 8);
 AFRAME.registerComponent('select-bar', {
   schema: {
     controls: {type: 'boolean', default: true},
-    controllerID: {type: 'string', default: 'rightController'},
-    selectedOptgroupValue: {type: 'string'},            // not intended to be set when defining component, used for tracking state
-    selectedOptgroupIndex: {type: 'int', default: 0},   // not intended to be set when defining component, used for tracking state
-    selectedOptionValue: {type: 'string'},              // not intended to be set when defining component, used for tracking state
-    selectedOptionIndex: {type: 'int', default: 0}      // not intended to be set when defining component, used for tracking state
+    controllerID: {type: 'string', default: 'rightController'}
   },
 
   // for a given optgroup, make the children
@@ -128,7 +124,11 @@ AFRAME.registerComponent('select-bar', {
   init: function () {
     // Create select bar menu from html child `option` elements beneath parent entity inspired by the html5 spec: http://www.w3schools.com/tags/tag_optgroup.asp
     var selectEl = this.el;  // Reference to the component's element.
-    this.data.lastTime = new Date();
+    this.lastTime = new Date();
+    this.selectedOptgroupValue = null;
+    this.selectedOptgroupIndex = 0;
+    this.selectedOptionValue = null;
+    this.selectedOptionIndex = 0;
 
     // we want a consistent prefix when creating IDs
     // if the parent has an id, use that; otherwise, use the string "menu"
@@ -147,14 +147,14 @@ AFRAME.registerComponent('select-bar', {
     selectEl.appendChild(selectRenderEl);
 
     var optgroups = selectEl.getElementsByTagName("optgroup");  // Get the optgroups
-    var selectedOptgroupEl = optgroups[this.data.selectedOptgroupIndex];  // fetch the currently selected optgroup
-    this.data.selectedOptgroupValue = selectedOptgroupEl.getAttribute("value"); // set component property to opgroup value
+    var selectedOptgroupEl = optgroups[this.selectedOptgroupIndex];  // fetch the currently selected optgroup
+    this.selectedOptgroupValue = selectedOptgroupEl.getAttribute("value"); // set component property to opgroup value
 
-    this.makeSelectOptionsRow(selectedOptgroupEl, selectRenderEl, this.data.selectedOptgroupIndex, 0, this.idPrefix);
+    this.makeSelectOptionsRow(selectedOptgroupEl, selectRenderEl, this.selectedOptgroupIndex, 0, this.idPrefix);
 
     var options = selectedOptgroupEl.getElementsByTagName("option");
-    var selectedOptionEl = options[this.data.selectedOptionIndex];
-    this.data.selectedOptionValue = selectedOptionEl.getAttribute("value");
+    var selectedOptionEl = options[this.selectedOptionIndex];
+    this.selectedOptionValue = selectedOptionEl.getAttribute("value");
 
   },
 
@@ -311,8 +311,8 @@ AFRAME.registerComponent('select-bar', {
 
               // debounce (throttle) such that this only runs once every 1/2 second max
               var thisTime = new Date();
-              if ( Math.floor(thisTime - this.data.lastTime) > 500 ) {
-                this.data.lastTime = thisTime;
+              if ( Math.floor(thisTime - this.lastTime) > 500 ) {
+                this.lastTime = thisTime;
                 this.onTrackpadDown(evt);
               }
 
@@ -358,7 +358,7 @@ AFRAME.registerComponent('select-bar', {
     var arrow = document.getElementById(this.idPrefix + "arrowDown");
     var currentArrowColor = new THREE.Color(arrow.getAttribute("material").color);
     if ( !(currentArrowColor.r > 0 && currentArrowColor.g > 0) ) { // if not already some shade of yellow (which indicates recent button press) then animate green hover
-      if (this.data.selectedOptgroupIndex + 2 > optgroups.length) {
+      if (this.selectedOptgroupIndex + 2 > optgroups.length) {
         // CAN'T DO - ALREADY AT END OF LIST
         var arrowColor = "#FF0000";
       } else {
@@ -373,13 +373,13 @@ AFRAME.registerComponent('select-bar', {
 
   onHoverUp: function () {
     this.el.emit("menuHoverUp");
-    var selectEl = this.el;
-    var optgroups = selectEl.getElementsByTagName("optgroup");  // Get the optgroups
+//    var selectEl = this.el;
+//    var optgroups = selectEl.getElementsByTagName("optgroup");  // Get the optgroups
 
     var arrow = document.getElementById(this.idPrefix + "arrowUp");
     var currentArrowColor = new THREE.Color(arrow.getAttribute("material").color);
     if ( !(currentArrowColor.r > 0 && currentArrowColor.g > 0) ) { // if not already some shade of yellow (which indicates recent button press) then animate green hover
-      if (this.data.selectedOptgroupIndex - 1 < 0) {
+      if (this.selectedOptgroupIndex - 1 < 0) {
          // CAN'T DO - ALREADY AT END OF LIST
          var arrowColor = "#FF0000";
        } else {
@@ -405,7 +405,7 @@ AFRAME.registerComponent('select-bar', {
     var optgroups = selectEl.getElementsByTagName("optgroup");  // Get the optgroups
     var selectRenderEl = document.getElementById(this.idPrefix + "selectRender");
 
-    if (this.data.selectedOptgroupIndex + 2 > optgroups.length) {
+    if (this.selectedOptgroupIndex + 2 > optgroups.length) {
       // CAN'T DO THIS, show red arrow
       var arrow = document.getElementById(this.idPrefix + "arrowDown");
       arrow.removeAttribute('animation__color');
@@ -418,25 +418,25 @@ AFRAME.registerComponent('select-bar', {
     } else {
       // CAN DO THIS, show next optgroup
 
-      this.removeSelectOptionsRow(this.data.selectedOptgroupIndex); // remove the old optgroup row
+      this.removeSelectOptionsRow(this.selectedOptgroupIndex); // remove the old optgroup row
 
-      this.data.selectedOptgroupIndex += 1;
-      var selectedOptgroupEl = optgroups[this.data.selectedOptgroupIndex];  // fetch the currently selected optgroup
-      this.data.selectedOptgroupValue = selectedOptgroupEl.getAttribute("value"); // set component property to opgroup value
+      this.selectedOptgroupIndex += 1;
+      var selectedOptgroupEl = optgroups[this.selectedOptgroupIndex];  // fetch the currently selected optgroup
+      this.selectedOptgroupValue = selectedOptgroupEl.getAttribute("value"); // set component property to opgroup value
 
       this.el.flushToDOM();
 
-      var nextSelectedOptgroupEl = optgroups[this.data.selectedOptgroupIndex];  // fetch the currently selected optgroup
-      // this.makeSelectOptionsRow(nextSelectedOptgroupEl, selectRenderEl, this.data.selectedOptgroupIndex, -0.15);
-      this.makeSelectOptionsRow(nextSelectedOptgroupEl, selectRenderEl, this.data.selectedOptgroupIndex, 0, this.idPrefix);
+      var nextSelectedOptgroupEl = optgroups[this.selectedOptgroupIndex];  // fetch the currently selected optgroup
+      // this.makeSelectOptionsRow(nextSelectedOptgroupEl, selectRenderEl, this.selectedOptgroupIndex, -0.15);
+      this.makeSelectOptionsRow(nextSelectedOptgroupEl, selectRenderEl, this.selectedOptgroupIndex, 0, this.idPrefix);
 
       // Change selected option element when optgroup is changed
-      var selectOptionsRowEl = document.getElementById(this.idPrefix + 'selectOptionsRow' + this.data.selectedOptgroupIndex);
+      var selectOptionsRowEl = document.getElementById(this.idPrefix + 'selectOptionsRow' + this.selectedOptgroupIndex);
       var newlySelectedMenuEl = selectOptionsRowEl.getElementsByClassName('selected')[0];
 
       // update selectOptionsValue and Index
-      this.data.selectedOptionValue = newlySelectedMenuEl.getAttribute("value");
-      this.data.selectedOptionIndex = newlySelectedMenuEl.getAttribute("optionid");
+      this.selectedOptionValue = newlySelectedMenuEl.getAttribute("value");
+      this.selectedOptionIndex = newlySelectedMenuEl.getAttribute("optionid");
 
       this.el.flushToDOM();
 
@@ -459,7 +459,7 @@ AFRAME.registerComponent('select-bar', {
     var optgroups = selectEl.getElementsByTagName("optgroup");  // Get the optgroups
     var selectRenderEl = document.getElementById(this.idPrefix + "selectRender");
 
-    if (this.data.selectedOptgroupIndex - 1 < 0) {
+    if (this.selectedOptgroupIndex - 1 < 0) {
       // CAN'T DO THIS, show red arrow
       var arrow = document.getElementById(this.idPrefix + "arrowUp");
       arrow.removeAttribute('animation__color');
@@ -472,25 +472,25 @@ AFRAME.registerComponent('select-bar', {
     } else {
       // CAN DO THIS, show previous optgroup
 
-      this.removeSelectOptionsRow(this.data.selectedOptgroupIndex); // remove the old optgroup row
+      this.removeSelectOptionsRow(this.selectedOptgroupIndex); // remove the old optgroup row
 
-      this.data.selectedOptgroupIndex -= 1;
-      var selectedOptgroupEl = optgroups[this.data.selectedOptgroupIndex];  // fetch the currently selected optgroup
-      this.data.selectedOptgroupValue = selectedOptgroupEl.getAttribute("value"); // set component property to opgroup value
+      this.selectedOptgroupIndex -= 1;
+      var selectedOptgroupEl = optgroups[this.selectedOptgroupIndex];  // fetch the currently selected optgroup
+      this.selectedOptgroupValue = selectedOptgroupEl.getAttribute("value"); // set component property to opgroup value
 
       this.el.flushToDOM();
 
-      var nextSelectedOptgroupEl = optgroups[this.data.selectedOptgroupIndex];  // fetch the currently selected optgroup
-      // this.makeSelectOptionsRow(nextSelectedOptgroupEl, selectRenderEl, this.data.selectedOptgroupIndex, -0.15);
-      this.makeSelectOptionsRow(nextSelectedOptgroupEl, selectRenderEl, this.data.selectedOptgroupIndex, 0, this.idPrefix);
+      var nextSelectedOptgroupEl = optgroups[this.selectedOptgroupIndex];  // fetch the currently selected optgroup
+      // this.makeSelectOptionsRow(nextSelectedOptgroupEl, selectRenderEl, this.selectedOptgroupIndex, -0.15);
+      this.makeSelectOptionsRow(nextSelectedOptgroupEl, selectRenderEl, this.selectedOptgroupIndex, 0, this.idPrefix);
 
       // Change selected option element when optgroup is changed
-      var selectOptionsRowEl = document.getElementById(this.idPrefix + 'selectOptionsRow' + this.data.selectedOptgroupIndex);
+      var selectOptionsRowEl = document.getElementById(this.idPrefix + 'selectOptionsRow' + this.selectedOptgroupIndex);
       var newlySelectedMenuEl = selectOptionsRowEl.getElementsByClassName('selected')[0];
 
       // update selectOptionsValue and Index
-      this.data.selectedOptionValue = newlySelectedMenuEl.getAttribute("value");
-      this.data.selectedOptionIndex = newlySelectedMenuEl.getAttribute("optionid");
+      this.selectedOptionValue = newlySelectedMenuEl.getAttribute("value");
+      this.selectedOptionIndex = newlySelectedMenuEl.getAttribute("optionid");
 
       this.el.flushToDOM();
 
@@ -556,8 +556,8 @@ AFRAME.registerComponent('select-bar', {
     // menu: save the currently selected menu element
     // console.log("direction?");
     // console.log(direction);
-    console.log(this.idPrefix + 'selectOptionsRow' + this.data.selectedOptgroupIndex);
-    var selectOptionsRowEl = document.getElementById(this.idPrefix + 'selectOptionsRow' + this.data.selectedOptgroupIndex);
+    console.log(this.idPrefix + 'selectOptionsRow' + this.selectedOptgroupIndex);
+    var selectOptionsRowEl = document.getElementById(this.idPrefix + 'selectOptionsRow' + this.selectedOptgroupIndex);
 
     const oldMenuEl = selectOptionsRowEl.getElementsByClassName('selected')[0];
     // console.log(oldMenuEl);
@@ -568,7 +568,7 @@ AFRAME.registerComponent('select-bar', {
 
     var selectEl = this.el;  // Reference to the component's entity.
     var optgroups = selectEl.getElementsByTagName("optgroup");  // Get the optgroups
-    var selectedOptgroupEl = optgroups[this.data.selectedOptgroupIndex];  // fetch the currently selected optgroup
+    var selectedOptgroupEl = optgroups[this.selectedOptgroupIndex];  // fetch the currently selected optgroup
 
     if (direction == 'previous') {
       this.el.emit("menuPrevious");
@@ -591,9 +591,9 @@ AFRAME.registerComponent('select-bar', {
       // menu: remove selected class and change colors
       oldMenuEl.classList.remove("selected");
       newMenuEl.classList.add("selected");
-      this.data.selectedOptionValue = newMenuEl.getAttribute("value");
-      console.log(this.data.selectedOptionValue);
-      this.data.selectedOptionIndex = selectedOptionIndex;
+      this.selectedOptionValue = newMenuEl.getAttribute("value");
+      console.log(this.selectedOptionValue);
+      this.selectedOptionIndex = selectedOptionIndex;
       this.el.flushToDOM();
       this.el.emit("menuChanged");
       oldMenuEl.getElementsByClassName("objectName")[0].setAttribute('text', 'color', 'gray');
@@ -687,9 +687,9 @@ AFRAME.registerComponent('select-bar', {
       // menu: remove selected class and change colors
       oldMenuEl.classList.remove("selected");
       newMenuEl.classList.add("selected");
-      this.data.selectedOptionValue = newMenuEl.getAttribute("value");
-      console.log(this.data.selectedOptionValue);
-      this.data.selectedOptionIndex = selectedOptionIndex;
+      this.selectedOptionValue = newMenuEl.getAttribute("value");
+      console.log(this.selectedOptionValue);
+      this.selectedOptionIndex = selectedOptionIndex;
       this.el.flushToDOM();
       this.el.emit("menuChanged");
       oldMenuEl.getElementsByClassName("objectName")[0].setAttribute('text', 'color', 'gray');
