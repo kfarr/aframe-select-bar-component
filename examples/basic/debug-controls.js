@@ -5,9 +5,9 @@ if (typeof AFRAME === 'undefined') {
 }
 
 /**
- * Game logic for controlling a-frame actions such as teleport and save
+ * Debug component for testing select-bar component, also serves as an example of how to access component state variables
  */
-AFRAME.registerComponent('action-controls', {
+AFRAME.registerComponent('debug-controls', {
   schema: {
     menuID: {type: "string", default: "menu"}
   },
@@ -39,10 +39,10 @@ AFRAME.registerComponent('action-controls', {
   init: function () {
     var menuEl = document.getElementById(this.data.menuID);
 
-    console.log("action-controls: INIT; menu element: " + menuEl);
+    console.log("debug-controls: INIT; menu element: " + menuEl);
     // get currently selected action
     var optionValue = menuEl.components['select-bar'].selectedOptionValue;
-    console.log("action-controls: optionValue:" + optionValue);
+    console.log("debug-controls: optionValue:" + optionValue);
 //    console.log(optionValue);
 
     // do the thing associated with the action
@@ -55,7 +55,7 @@ AFRAME.registerComponent('action-controls', {
 
     // get currently selected action
     var optionValue = menuEl.components['select-bar'].selectedOptionValue;
-    console.log("action-controls: onActionSelect triggered; current optionValue:" + optionValue);
+    console.log("debug-controls: onActionSelect triggered; current optionValue:" + optionValue);
 //    console.log(optionValue);
     // call the thing that does it
   },
@@ -67,7 +67,7 @@ AFRAME.registerComponent('action-controls', {
     var menuEl = document.getElementById(this.data.menuID);
     // get currently selected action
     var optionValue = menuEl.components['select-bar'].selectedOptionValue;
-    console.log("action-controls: new optionValue: " + optionValue);
+    console.log("debug-controls: new optionValue: " + optionValue);
 //    console.log(optionValue);
     // do new one
     this.handleActionStart(optionValue);
@@ -103,7 +103,7 @@ AFRAME.registerComponent('action-controls', {
     // for given optionValue, do something
     switch (optionValue) {
       case "teleport":        // add teleport component to the control element that is the parent of this menu
-        console.log("action-controls: teleportStart");
+        console.log("debug-controls: teleportStart");
         // controlEl = this.el;
         // console.log("controlEl:");
         // console.log(controlEl);
@@ -111,13 +111,13 @@ AFRAME.registerComponent('action-controls', {
         // controlEl.setAttribute("teleport-controls", "button: trigger; collisionEntities: #ground");
         return; // without this return the other cases are fired - weird!
       case "save":
-        console.log("action-controls: saveStart");
+        console.log("debug-controls: saveStart");
         return;
       case "saveAs":
-        console.log("action-controls: saveAsStart");
+        console.log("debug-controls: saveAsStart");
         return;
       case "new":
-        console.log("action-controls: newStart");
+        console.log("debug-controls: newStart");
         return;
     }
   },
@@ -126,7 +126,7 @@ AFRAME.registerComponent('action-controls', {
     // for given optionValue, do something
     switch (optionValue) {
       case "teleport":        // add teleport component to the control element that is the parent of this menu
-        console.log("action-controls: teleportEnd");
+        console.log("debug-controls: teleportEnd");
         // controlEl = this.el;
         // console.log("controlEl:");
         // console.log(controlEl);
@@ -134,13 +134,13 @@ AFRAME.registerComponent('action-controls', {
         // controlEl.removeAttribute("teleport-controls");
         return; // without this return the other cases are fired - weird!
       case "save":
-        console.log("action-controls: saveStartEnd");
+        console.log("debug-controls: saveStartEnd");
         return;
       case "saveAs":
-        console.log("action-controls: saveAsStartEnd");
+        console.log("debug-controls: saveAsStartEnd");
         return;
       case "new":
-        console.log("action-controls: newStartEnd");
+        console.log("debug-controls: newStartEnd");
         return;
     }
   }
