@@ -354,7 +354,7 @@ AFRAME.registerComponent('select-bar', {
     var selectEl = this.el;
     var optgroups = selectEl.getElementsByTagName("optgroup");  // Get the optgroups
 
-    console.log(this.idPrefix + "arrowDown");
+//    console.log(this.idPrefix + "arrowDown");
     var arrow = document.getElementById(this.idPrefix + "arrowDown");
     var currentArrowColor = new THREE.Color(arrow.getAttribute("material").color);
     if ( !(currentArrowColor.r > 0 && currentArrowColor.g > 0) ) { // if not already some shade of yellow (which indicates recent button press) then animate green hover
@@ -530,19 +530,19 @@ AFRAME.registerComponent('select-bar', {
       switch (indexOfMax(arrowColorArrayGreen)) {         // Determine which value in the array is the largest
         case 0:        // up
           this.onOptgroupPrevious();
-          console.log("PRESSup");
+//          console.log("PRESSup");
           return; // without this return the other cases are fired - weird!
         case 1:        // right
           this.onOptionSwitch("next");
-          console.log("PRESSright");
+//          console.log("PRESSright");
           return;
         case 2:        // down
           this.onOptgroupNext();
-          console.log("PRESSdown");
+//          console.log("PRESSdown");
           return;
         case 3:        // left
           this.onOptionSwitch("previous");
-          console.log("PRESSleft");
+//          console.log("PRESSleft");
           return;
       }
     }
@@ -550,13 +550,13 @@ AFRAME.registerComponent('select-bar', {
   },
 
   onOptionSwitch: function (direction) {
-    console.log(this);
-    console.log(this.data);
+//    console.log(this);
+//    console.log(this.data);
     // Switch to the next option, or switch in the direction of the most recently hovered directional arrow
     // menu: save the currently selected menu element
     // console.log("direction?");
     // console.log(direction);
-    console.log(this.idPrefix + 'selectOptionsRow' + this.selectedOptgroupIndex);
+//    console.log(this.idPrefix + 'selectOptionsRow' + this.selectedOptgroupIndex);
     var selectOptionsRowEl = document.getElementById(this.idPrefix + 'selectOptionsRow' + this.selectedOptgroupIndex);
 
     const oldMenuEl = selectOptionsRowEl.getElementsByClassName('selected')[0];
@@ -688,7 +688,7 @@ AFRAME.registerComponent('select-bar', {
       oldMenuEl.classList.remove("selected");
       newMenuEl.classList.add("selected");
       this.selectedOptionValue = newMenuEl.getAttribute("value");
-      console.log(this.selectedOptionValue);
+//      console.log(this.selectedOptionValue);
       this.selectedOptionIndex = selectedOptionIndex;
       this.el.flushToDOM();
       this.el.emit("menuChanged");
