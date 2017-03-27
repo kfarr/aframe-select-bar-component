@@ -10,6 +10,8 @@
 
     <script src="https://rawgit.com/ngokevin/aframe-animation-component/master/dist/aframe-animation-component.js"></script>
     <script src="../build.js"></script>
+    <script src="action-controls.js"></script>
+
 
   </head>
   <body>
@@ -25,7 +27,7 @@
       </a-entity>
 
       <!-- Left Hand -->
-      <a-entity id="leftController" wasd-controls oculus-touch-controls="hand: left" vive-controls="hand: left" >
+      <a-entity id="leftController" action-controls="menuID: menuActions" wasd-controls oculus-touch-controls="hand: left" vive-controls="hand: left" >
         <a-entity select-bar="controllerID: leftController" id="menuActions" scale="0.7 0.7 0.7" position="0 0.05 0.08" rotation="-85 0 0">
           <optgroup label="Actions" value="actions">
             <option value="teleport" src="icon_teleport.png" selected>Teleport</option>
