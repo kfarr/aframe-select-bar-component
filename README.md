@@ -1,14 +1,20 @@
 ## aframe-select-bar-component
 
+>> [Try it out now if you have a WebVR compatible browser and an HTC Vive or Oculus Rift with Touch Controls](https://kfarr.github.io/aframe-select-bar-component/examples/basic/)
+
 This [A-Frame](https://aframe.io) component `select-bar` creates a menu that can be defined using HTML `option` elements and attached to a VR controller.
 
 This component is inspired by the HTML standard [`select`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select) element including [`optgroup`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/optgroup) element for grouping options together. The idea was to create a VR UI component which mimicked an existing traditional HTML standard.
 
 I made this component out of necessity. When creating a [WebVR app](https://github.com/kfarr/aframe-city-builder) using A-Frame, I wanted a simple way to allow a user to select from a large number of objects organized in multiple categories.
 
-I wrote up a description coming up with the component design here: https://medium.com/@kfarr/building-a-vr-user-interface-for-a-frame-city-builder-38b0c86ed7b7
+I wrote up a blog post about the process of coming up with the component design: https://medium.com/@kfarr/building-a-vr-user-interface-for-a-frame-city-builder-38b0c86ed7b7
 
-[![Video](https://img.youtube.com/vi/JlfMPgNpm3o/0.jpg)](https://www.youtube.com/watch?v=JlfMPgNpm3o)
+[Video](https://www.youtube.com/watch?v=JlfMPgNpm3o)
+
+![Image](select-bar-component.gif)
+![Image](select-bar2.gif)
+
 
 ### Requirements and Limitations
 * WebVR, HTC Vive and/or Oculus Rift
@@ -62,6 +68,46 @@ Install and use by directly including the [browser files](dist):
 
 ### API
 
+#### Properties
+These schema properties can be set prior to runtime.
+
 | Property | Description | Default Value |
 | -------- | ----------- | ------------- |
-|          |             |               |
+| controls | Respond to controller events. | true          |
+| controllerID | DOM ID of element with `oculus-touch-controls` or `vive-controls` component | rightController |
+
+#### Runtime Properties
+These runtime properties are intended to be read only as a result of user action on the component.
+
+| Value    | Type | Description |
+| -------- | ---- | ----------- |
+| selectedOptgroupValue | string | The `value` property of the parent `optgroup` element of the currently selected `option` as selected by the user |
+| selectedOptgroupIndex | integer | The 0 based index of the currently selected `optgroup` |
+| selectedOptionValue | string | The `value` property of the currently selected `option` as selected by the user |
+| selectedOptionIndex | integer | The 0 based index of the currently selected `option` element within the `optgroup` |
+
+These properties can be accessed from the element with an active `select-bar` component:
+```
+var optionValue = menuEl.components['select-bar'].selectedOptionValue;
+```
+
+#### Events
+The component emits events that can be integrated with your application logic.
+
+| Event | Description |
+| ----- | ----------- |
+| menuSelected | A trigger has been pressed by the user to "activate" the currently selected item |
+| menuChanged | The currently selected `option` has changed |
+| menuOptgroupNext | The next `optgroup` has been selected |
+| menuOptgroupPrevious | The previous `optgroup` has been selected |
+| menuPrevious | The previous `option` has been selected |
+| menuNext | The next `option` has been selected |
+| menuHoverRight | Hover indicates the touch area is active (Vive) or the thumbstick is non-neutral (Oculus Touch) and this represents the dominant direction is Right |
+| menuHoverLeft | "" Left |
+| menuHoverDown | "" Down |
+| menuHoverUp | "" Up |
+
+You can add listeners for these events within your own application logic, for example:
+```
+menuEl.addEventListener('menuChanged', this.onActionChange.bind(this));
+```
