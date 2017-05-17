@@ -6,9 +6,13 @@ This component is inspired by the HTML standard [`select`](https://developer.moz
 
 I made this component out of necessity. When creating a [WebVR app](https://github.com/kfarr/aframe-city-builder) using A-Frame, I wanted a simple way to allow a user to select from a large number of objects organized in multiple categories.
 
-I wrote up a description coming up with the component design here: https://medium.com/@kfarr/building-a-vr-user-interface-for-a-frame-city-builder-38b0c86ed7b7
+I wrote up a blog post about the process of coming up with the component design: https://medium.com/@kfarr/building-a-vr-user-interface-for-a-frame-city-builder-38b0c86ed7b7
 
-[![Video](https://img.youtube.com/vi/JlfMPgNpm3o/0.jpg)](https://www.youtube.com/watch?v=JlfMPgNpm3o)
+[Video](https://www.youtube.com/watch?v=JlfMPgNpm3o)
+
+![Image](select-bar-component.gif)
+![Image](select-bar2.gif)
+
 
 ### Requirements and Limitations
 * WebVR, HTC Vive and/or Oculus Rift
