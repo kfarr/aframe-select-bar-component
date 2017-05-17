@@ -494,7 +494,7 @@ AFRAME.registerComponent('select-bar', {
 
       this.el.flushToDOM();
 
-      this.el.emit("menuOptgroupNext");
+      this.el.emit("menuOptgroupPrevious");
       this.el.emit("menuChanged");
 
       var arrow = document.getElementById(this.idPrefix + "arrowUp");
