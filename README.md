@@ -74,8 +74,8 @@ These schema properties can be set prior to runtime.
 | controls | Respond to controller events. | true          |
 | controllerID | DOM ID of element with `oculus-touch-controls` or `vive-controls` component | rightController |
 
-#### Runtime Values
-These runtime values are intended to be read only as a result of user action on the component.
+#### Runtime Properties
+These runtime properties are intended to be read only as a result of user action on the component.
 
 | Value    | Type | Description |
 | -------- | ---- | ----------- |
@@ -84,7 +84,28 @@ These runtime values are intended to be read only as a result of user action on 
 | selectedOptionValue | string | The `value` property of the currently selected `option` as selected by the user |
 | selectedOptionIndex | integer | The 0 based index of the currently selected `option` element within the `optgroup` |
 
-These values can be accessed from the element with an active `select-bar` component:
+These properties can be accessed from the element with an active `select-bar` component:
 ```
 var optionValue = menuEl.components['select-bar'].selectedOptionValue;
+```
+
+#### Events
+The component emits events that can be integrated with your application logic.
+
+| Event | Description |
+| ----- | ----------- |
+| menuSelected | A trigger has been pressed by the user to "activate" the currently selected item |
+| menuChanged | The currently selected `option` has changed |
+| menuOptgroupNext | The next `optgroup` has been selected |
+| menuOptgroupPrevious | The previous `optgroup` has been selected |
+| menuPrevious | The previous `option` has been selected |
+| menuNext | The next `option` has been selected |
+| menuHoverRight | Hover indicates the touch area is active (Vive) or the thumbstick is non-neutral (Oculus Touch) and this represents the dominant direction is Right |
+| menuHoverLeft | "" Left |
+| menuHoverDown | "" Down |
+| menuHoverUp | "" Up |
+
+You can add listeners for these events within your own application logic, for example:
+```
+menuEl.addEventListener('menuChanged', this.onActionChange.bind(this));
 ```
