@@ -2,7 +2,7 @@
 
 This [A-Frame](https://aframe.io) component creates a menu that can be defined using html option elements and attached to a VR controller.
 
-This component is inspired by the HTML5 standard `[select](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select)` element including `[optgroup](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/optgroup)` element for grouping options together. The idea was to create a VR UI component which mimicked an existing traditional HTML standard.
+This component is inspired by the HTML5 standard [`select`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select) element including [`optgroup`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/optgroup) element for grouping options together. The idea was to create a VR UI component which mimicked an existing traditional HTML standard.
 
 I made this component out of necessity. When creating a [WebVR app](https://github.com/kfarr/aframe-city-builder) using A-Frame, I wanted a simple way to allow a user to select from a large number of objects organized in multiple categories.
 
@@ -59,9 +59,6 @@ Install and use by directly including the [browser files](dist):
 </body>
 ```
 
-
-### Usage
-*
 
 ### API
 
