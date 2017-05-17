@@ -1,5 +1,7 @@
 ## aframe-select-bar-component
 
+>> [Try it out now if you have a WebVR compatible browser and an HTC Vive or Oculus Rift with Touch Controls](https://kfarr.github.io/aframe-select-bar-component/examples/basic/)
+
 This [A-Frame](https://aframe.io) component `select-bar` creates a menu that can be defined using HTML `option` elements and attached to a VR controller.
 
 This component is inspired by the HTML standard [`select`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select) element including [`optgroup`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/optgroup) element for grouping options together. The idea was to create a VR UI component which mimicked an existing traditional HTML standard.
