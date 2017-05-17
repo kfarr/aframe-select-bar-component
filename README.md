@@ -66,6 +66,25 @@ Install and use by directly including the [browser files](dist):
 
 ### API
 
+#### Properties
+These schema properties can be set prior to runtime.
+
 | Property | Description | Default Value |
 | -------- | ----------- | ------------- |
-|          |             |               |
+| controls | Respond to controller events. | true          |
+| controllerID | DOM ID of element with `oculus-touch-controls` or `vive-controls` component | rightController |
+
+#### Runtime Values
+These runtime values are intended to be read only as a result of user action on the component.
+
+| Value    | Type | Description |
+| -------- | ---- | ----------- |
+| selectedOptgroupValue | string | The `value` property of the parent `optgroup` element of the currently selected `option` as selected by the user |
+| selectedOptgroupIndex | integer | The 0 based index of the currently selected `optgroup` |
+| selectedOptionValue | string | The `value` property of the currently selected `option` as selected by the user |
+| selectedOptionIndex | integer | The 0 based index of the currently selected `option` element within the `optgroup` |
+
+These values can be accessed from the element with an active `select-bar` component:
+```
+var optionValue = menuEl.components['select-bar'].selectedOptionValue;
+```
