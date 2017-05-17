@@ -1,6 +1,6 @@
 ## aframe-select-bar-component
 
-This [A-Frame](https://aframe.io) component creates a menu that can be defined using html option elements and attached to a VR controller.
+This [A-Frame](https://aframe.io) component `select-bar` creates a menu that can be defined using html option elements and attached to a VR controller.
 
 This component is inspired by the HTML5 standard [`select`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select) element including [`optgroup`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/optgroup) element for grouping options together. The idea was to create a VR UI component which mimicked an existing traditional HTML standard.
 
