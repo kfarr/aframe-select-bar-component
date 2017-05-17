@@ -1,29 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-/* global AFRAME, THREE */
-
-/**
- * Loads and setup ground model.
- */
-AFRAME.registerComponent('ground', {
-  init: function () {
-    var objectLoader;
-    var object3D = this.el.object3D;
-    // var MODEL_URL = 'https://cdn.aframe.io/link-traversal/models/ground.json';
-    var MODEL_URL = '/assets/environment/ground.json';
-    if (this.objectLoader) { return; }
-    objectLoader = this.objectLoader = new THREE.ObjectLoader();
-    objectLoader.crossOrigin = '';
-    objectLoader.load(MODEL_URL, function (obj) {
-      obj.children.forEach(function (value) {
-        value.receiveShadow = true;
-        value.material.shading = THREE.FlatShading;
-      });
-      object3D.add(obj);
-    });
-  }
-});
-
-},{}],2:[function(require,module,exports){
 /* global AFRAME */
 AFRAME.registerShader('skyGradient', {
   schema: {
@@ -67,12 +42,11 @@ AFRAME.registerShader('skyGradient', {
   ].join('\n')
 });
 
-},{}],3:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 require('../index.js');
 require('./assets/environment/skyGradient.js');
-require('./assets/environment/ground.js');
 
-},{"../index.js":4,"./assets/environment/ground.js":1,"./assets/environment/skyGradient.js":2}],4:[function(require,module,exports){
+},{"../index.js":3,"./assets/environment/skyGradient.js":1}],3:[function(require,module,exports){
 // NOTES:
 // at least one optgroup required, at least 7 options required per optgroup
 // 4 and below should be no scroll
@@ -855,4 +829,4 @@ AFRAME.registerComponent('select-bar', {
 
 });
 
-},{}]},{},[3]);
+},{}]},{},[2]);
